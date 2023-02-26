@@ -1,5 +1,6 @@
 package com.taylorgirard.beachhacks2023
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -53,26 +54,36 @@ class AddPinActivity : AppCompatActivity() {
 
                     val obj = JSONObject(response)
                     val results = obj.getJSONArray("results")
-                    val addressComponents = results.getJSONObject(0);
-                    val geometry = addressComponents.getJSONObject("geometry");
-                    val location = geometry.getJSONObject("location");
-                    val lat = location.getDouble("lat");
-                    val long = location.getDouble("lng");
+                    if (results.length() != 0){
+                        val addressComponents = results.getJSONObject(0);
+                        val geometry = addressComponents.getJSONObject("geometry");
+                        val location = geometry.getJSONObject("location");
+                        val lat = location.getDouble("lat");
+                        val long = location.getDouble("lng");
 
-                    val user = Firebase.auth.currentUser
-                    val database = Firebase.database.reference
-                    if (user != null) {
-                        database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
-                            val userGroup = task.result.value.toString()
-                            var uniqueID = UUID.randomUUID().toString()
-                            database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Title").setValue(title)
-                            database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Description").setValue(description)
-                            database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lat").setValue(lat)
-                            database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lng").setValue(long)
+                        val user = Firebase.auth.currentUser
+                        val database = Firebase.database.reference
+                        if (user != null) {
+                            database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
+                                val userGroup = task.result.value.toString()
+                                var uniqueID = UUID.randomUUID().toString()
+                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Title").setValue(title)
+                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Description").setValue(description)
+                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lat").setValue(lat)
+                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lng").setValue(long)
 
+                            }
                         }
+                        Log.i("geocoding",response)
+
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(baseContext, "Invalid Address",
+                            Toast.LENGTH_SHORT).show()
                     }
-                    Log.i("geocoding",response)
+
                 },
                 {
                     Toast.makeText(
