@@ -18,9 +18,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -75,10 +79,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         this.map = googleMap
-        if (ContextCompat.checkSelfPermission(this.applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),1)
+        if (ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
         }
         val locationResult = fusedLocationProviderClient.lastLocation
         locationResult.addOnCompleteListener(this) { task ->
@@ -86,12 +97,44 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 // Set the map's camera position to the current location of the device.
                 val lastKnownLocation = task.result
                 if (lastKnownLocation != null) {
-                    map?.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        LatLng(lastKnownLocation!!.latitude,
-                            lastKnownLocation!!.longitude), 15.toFloat()))
+                    map?.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                lastKnownLocation!!.latitude,
+                                lastKnownLocation!!.longitude
+                            ), 15.toFloat()
+                        )
+                    )
                 }
             }
         }
+
+        val user = Firebase.auth.currentUser
+        val database = Firebase.database.reference
+        if (user != null) {
+            database.child("Users").child(user.uid).child("Group").get()
+                .addOnCompleteListener { task ->
+                    val userGroup = task.result.value.toString()
+                    val pins = database.child("Groups").child(userGroup).child("Pins")
+
+                    pins.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            for (pin in dataSnapshot.children) {
+                                var position = LatLng(pin.child("Lat").value.toString().toDouble(), pin.child("Lng").value.toString().toDouble())
+                                var title = pin.child("Title").value.toString()
+                                var description = pin.child("Description").value.toString()
+                                val marker = map.addMarker(MarkerOptions().position(position).title(title).snippet(description))
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+                    })
+
+                }
+        }
+
     }
 
     @SuppressLint("MissingPermission")
