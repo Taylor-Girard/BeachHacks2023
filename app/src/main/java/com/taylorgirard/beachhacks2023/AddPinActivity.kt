@@ -14,16 +14,20 @@ import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.ActionCodeSettings.newBuilder
 import com.google.firebase.auth.OAuthProvider.newBuilder
 import com.google.firebase.auth.PhoneAuthOptions.newBuilder
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.cache.CacheBuilder.newBuilder
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.collect.Interners.newBuilder
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpRequest
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
 import java.net.URI
 import java.net.URL
 import java.net.URLEncoder
 import java.nio.file.attribute.AclEntry.newBuilder
+import java.util.*
 
 
 class AddPinActivity : AppCompatActivity() {
@@ -39,6 +43,8 @@ class AddPinActivity : AppCompatActivity() {
 
         btnSubmit.setOnClickListener{
             val address = etAddress.text.toString()
+            val title = etTitle.text.toString()
+            val description = etDescription.text.toString()
 
             var weburl = "https://maps.googleapis.com/maps/api/geocode/json?" + "address=" + address + "&key=" + BuildConfig.MAPS_API_KEY
 
@@ -46,19 +52,27 @@ class AddPinActivity : AppCompatActivity() {
                 { response ->
 
                     val obj = JSONObject(response)
-//                    if (obj.optString("status") == "true"){
-                        val results = obj.getJSONArray("results")
-                        val addressComponents = results.getJSONObject(0);
-                        val geometry = addressComponents.getJSONObject("geometry");
-                        val location = geometry.getJSONObject("location");
-                        val lat = location.getDouble("lat");
-                        val long = location.getDouble("lng");
+                    val results = obj.getJSONArray("results")
+                    val addressComponents = results.getJSONObject(0);
+                    val geometry = addressComponents.getJSONObject("geometry");
+                    val location = geometry.getJSONObject("location");
+                    val lat = location.getDouble("lat");
+                    val long = location.getDouble("lng");
 
-                        Log.i("geocoding",response)
-                        Toast.makeText(baseContext, "Response is: $lat + $long", Toast.LENGTH_SHORT).show()
-//                    } else {
-                        //Toast.makeText(baseContext, "ahhhh", Toast.LENGTH_SHORT).show()
-                    //}
+                    val user = Firebase.auth.currentUser
+                    val database = Firebase.database.reference
+                    if (user != null) {
+                        database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
+                            val userGroup = task.result.value.toString()
+                            var uniqueID = UUID.randomUUID().toString()
+                            database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Title").setValue(title)
+                            database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Description").setValue(description)
+                            database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lat").setValue(lat)
+                            database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lng").setValue(long)
+
+                        }
+                    }
+                    Log.i("geocoding",response)
                 },
                 {
                     Toast.makeText(
