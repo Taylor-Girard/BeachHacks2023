@@ -9,9 +9,12 @@ import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 private lateinit var auth: FirebaseAuth
+private lateinit var database: DatabaseReference
 
 class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +37,7 @@ class SignUpActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
 
             auth = Firebase.auth
+            database = Firebase.database.reference
 
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->

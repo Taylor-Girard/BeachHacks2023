@@ -30,6 +30,9 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".GroupActivity"
+            android:exported="false" />
+        <activity
             android:name=".SignUpActivity"
             android:exported="false">
             <meta-data
