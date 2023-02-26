@@ -16,6 +16,9 @@ private lateinit var auth: FirebaseAuth
 private lateinit var database: DatabaseReference
 
 class GroupDetailsActivity : AppCompatActivity() {
+    override fun onBackPressed() {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_details)
@@ -42,12 +45,9 @@ class GroupDetailsActivity : AppCompatActivity() {
 
         btnLeaveGroup.setOnClickListener {
             if (user != null) {
-                var num = ""
-                database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
-                    num = task.result.value.toString()
-                }
-                database.child("Groups").child(num).child(user.uid).removeValue()
+                //database.child("Groups").child(num).child(user.uid).removeValue()
                 database.child("Users").child(user.uid).child("Group").removeValue()
+                startActivity(Intent(this, GroupActivity::class.java))
             }
         }
     }

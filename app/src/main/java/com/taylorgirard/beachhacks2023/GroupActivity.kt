@@ -18,6 +18,9 @@ private lateinit var database: DatabaseReference
 private lateinit var auth: FirebaseAuth
 
 class GroupActivity : AppCompatActivity() {
+    override fun onBackPressed() {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group)
@@ -25,16 +28,7 @@ class GroupActivity : AppCompatActivity() {
         val user = Firebase.auth.currentUser
         database = Firebase.database.reference
 
-        if(user != null) {
-            val gNum = database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
-                if(task.result.value.toString() != "null") {
-                    val intent = Intent(this, GroupDetailsActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            }
-        }
-
+        var errorText = findViewById<TextView>(R.id.GroupErrorText)
         var btnJoin = findViewById<Button>(R.id.JoinGroupBtn)
         var joinNumber = findViewById<EditText>(R.id.JoinGroupNumber)
         var createNumber = findViewById<EditText>(R.id.CreateNumber)
@@ -45,17 +39,41 @@ class GroupActivity : AppCompatActivity() {
 
         btnJoin.setOnClickListener {
             val joinNum = joinNumber.text.toString()
-            if (user != null) {
-                database.child("Users").child(user.uid).child("Group").setValue(joinNum)
-                database.child("Groups").child(joinNum).child(user.uid).setValue(joinNum)
+            if(joinNum != "") {
+                if (user != null) {
+                    database.child("Groups").child(joinNum).get().addOnCompleteListener{ task ->
+                        if(task.result.exists()) {
+                            errorText.text = "Cannot join group: Group number " + joinNum + " is already taken"
+                        } else {
+                            database.child("Users").child(user.uid).child("Group").setValue(joinNum)
+                            //database.child("Groups").child(joinNum).child(user.uid).setValue(joinNum)
+                            startActivity(Intent(this, GroupDetailsActivity::class.java))
+                            finish()
+                        }
+                    }
+                }
+            } else {
+                errorText.text = "Please enter at least 1 number"
             }
         }
 
         btnCreate.setOnClickListener {
             val createNum = createNumber.text.toString()
-            if (user != null) {
-                database.child("Users").child(user.uid).child("Group").setValue(createNum)
-                database.child("Groups").child(createNum).child(user.uid).setValue(createNum)
+            if(createNum != "") {
+                if (user != null) {
+                    database.child("Groups").child(createNum).get().addOnCompleteListener { task ->
+                        if(task.result.exists()) {
+                            errorText.text = "Cannot create group: Group number " + createNum + " is already taken"
+                        } else {
+                            database.child("Users").child(user.uid).child("Group").setValue(createNum)
+                            //database.child("Groups").child(createNum).child(user.uid).setValue(createNum)
+                            startActivity(Intent(this, GroupDetailsActivity::class.java))
+                            finish()
+                        }
+                    }
+                }
+            } else {
+                errorText.text = "Please enter at least 1 number"
             }
         }
     }

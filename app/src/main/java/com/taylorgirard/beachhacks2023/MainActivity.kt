@@ -19,9 +19,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
+private lateinit var database: DatabaseReference
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
@@ -43,8 +47,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val btnGroups = findViewById<Button>(R.id.btnGroup)
         btnGroups.setOnClickListener {
-            val intent = Intent(this, GroupActivity::class.java)
-            startActivity(intent)
+            val user = Firebase.auth.currentUser
+            database = Firebase.database.reference
+            if(user != null) {
+                database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
+                    if(task.result.value.toString() != "null") {
+                        startActivity(Intent(this, GroupDetailsActivity::class.java))
+                    }
+                    else {
+                        startActivity(Intent(this, GroupActivity::class.java))
+                    }
+                }
+            }
+
         }
     }
 

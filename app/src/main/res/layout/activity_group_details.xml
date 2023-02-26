@@ -10,10 +10,12 @@
         android:id="@+id/GroupNum"
         android:layout_width="213dp"
         android:layout_height="191dp"
+        android:layout_marginTop="268dp"
         android:text="TextView"
         android:textAlignment="center"
-        tools:layout_editor_absoluteX="99dp"
-        tools:layout_editor_absoluteY="198dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnLeaveGroup"
@@ -21,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
         android:text="Leave Group"
-        app:layout_constraintTop_toBottomOf="@+id/GroupNum"
-        tools:layout_editor_absoluteX="137dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/GroupNum" />
 </androidx.constraintlayout.widget.ConstraintLayout>
