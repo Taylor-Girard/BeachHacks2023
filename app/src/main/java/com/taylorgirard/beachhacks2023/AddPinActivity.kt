@@ -97,18 +97,22 @@ class AddPinActivity : AppCompatActivity() {
                         if (user != null) {
                             database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
                                 val userGroup = task.result.value.toString()
-                                var uniqueID = UUID.randomUUID().toString()
-                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Title").setValue(title)
-                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Description").setValue(description)
-                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lat").setValue(lat)
-                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lng").setValue(long)
-                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Color").setValue(colorPosition)
-                                addressSubmitted = true
+                                if(userGroup != "null") {
+                                    var uniqueID = UUID.randomUUID().toString()
+                                    database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Title").setValue(title)
+                                    database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Description").setValue(description)
+                                    database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lat").setValue(lat)
+                                    database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lng").setValue(long)
+                                    database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Color").setValue(colorPosition)
+                                    addressSubmitted = true
 
-                                val intent = Intent(this, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-
+                                    val intent = Intent(this, MainActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                } else {
+                                    Toast.makeText(baseContext, "Please join a group before creating a pin",
+                                        Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                         Log.i("geocoding",response)
