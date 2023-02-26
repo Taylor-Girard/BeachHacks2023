@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.ActionCodeSettings.newBuilder
@@ -18,12 +19,12 @@ import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.collec
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpRequest
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient
+import org.json.JSONObject
 import java.net.URI
 import java.net.URL
 import java.net.URLEncoder
 import java.nio.file.attribute.AclEntry.newBuilder
 
-fun String.utf8(): String = URLEncoder.encode(this, "UTF-8")
 
 class AddPinActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,9 +44,21 @@ class AddPinActivity : AppCompatActivity() {
 
             val stringRequest = StringRequest(Request.Method.GET, weburl,
                 { response ->
-                    // Display the first 500 characters of the response string.
-                    Log.i("geocoding",response)
-                    Toast.makeText(baseContext, "Response is: $response", Toast.LENGTH_SHORT).show()
+
+                    val obj = JSONObject(response)
+//                    if (obj.optString("status") == "true"){
+                        val results = obj.getJSONArray("results")
+                        val addressComponents = results.getJSONObject(0);
+                        val geometry = addressComponents.getJSONObject("geometry");
+                        val location = geometry.getJSONObject("location");
+                        val lat = location.getDouble("lat");
+                        val long = location.getDouble("lng");
+
+                        Log.i("geocoding",response)
+                        Toast.makeText(baseContext, "Response is: $lat + $long", Toast.LENGTH_SHORT).show()
+//                    } else {
+                        //Toast.makeText(baseContext, "ahhhh", Toast.LENGTH_SHORT).show()
+                    //}
                 },
                 {
                     Toast.makeText(
