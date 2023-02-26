@@ -42,8 +42,8 @@ class GroupActivity : AppCompatActivity() {
             if(joinNum != "") {
                 if (user != null) {
                     database.child("Groups").child(joinNum).get().addOnCompleteListener{ task ->
-                        if(task.result.exists()) {
-                            errorText.text = "Cannot join group: Group number " + joinNum + " is already taken"
+                        if(!task.result.exists()) {
+                            errorText.text = "Cannot join group: Group number " + joinNum + " does not exist"
                         } else {
                             database.child("Users").child(user.uid).child("Group").setValue(joinNum)
                             //database.child("Groups").child(joinNum).child(user.uid).setValue(joinNum)
