@@ -2,10 +2,17 @@ package com.taylorgirard.beachhacks2023
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+
+private lateinit var auth: FirebaseAuth
+val TAG = "LOGIN ACTIVITY"
 
 class LoginActivity : AppCompatActivity() {
 
@@ -18,8 +25,24 @@ class LoginActivity : AppCompatActivity() {
         var etPassword = findViewById<EditText>(R.id.etPassword)
 
         btnLogin.setOnClickListener {
-            val myToast = Toast.makeText(applicationContext, "Hello Toast!", Toast.LENGTH_SHORT)
-            myToast.show()
+            val email = etEmail.text.toString()
+            val password = etPassword.text.toString()
+
+            auth = Firebase.auth
+
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success")
+                        val user = auth.currentUser
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+                        Toast.makeText(baseContext, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
     }
 
