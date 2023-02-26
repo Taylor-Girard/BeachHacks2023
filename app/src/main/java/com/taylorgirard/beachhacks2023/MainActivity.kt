@@ -2,10 +2,12 @@ package com.taylorgirard.beachhacks2023
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,8 +20,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
 
-private var locationPermissionGranted = false
-//private var lastKnownLocation: Location? = null
 private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -32,6 +32,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
+        val btnAddPin = findViewById<Button>(R.id.btnAddPin)
+        btnAddPin.setOnClickListener{
+            val intent = Intent(this, AddPinActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
         mapFragment.getMapAsync(this)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
     }
