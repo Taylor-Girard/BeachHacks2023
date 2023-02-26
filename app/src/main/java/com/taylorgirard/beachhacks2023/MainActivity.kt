@@ -40,6 +40,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         mapFragment.getMapAsync(this)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+        val btnGroups = findViewById<Button>(R.id.btnGroup)
+        btnGroups.setOnClickListener {
+            val intent = Intent(this, GroupActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     /**
