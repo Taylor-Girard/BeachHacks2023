@@ -63,7 +63,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
             }
+        }
 
+        val btnSignOut = findViewById<Button>(R.id.LogoutBtn)
+        btnSignOut.setOnClickListener {
+            Firebase.auth.signOut()
+            startActivity(Intent(this, LoginActivity::class.java))
         }
     }
 

@@ -24,6 +24,7 @@ class SignUpActivity : AppCompatActivity() {
         var btnSignUp = findViewById<Button>(R.id.SignUpButton)
         var etEmail = findViewById<EditText>(R.id.SignUpEmail)
         var etPassword = findViewById<EditText>(R.id.SignUpPassword)
+        var signUpUsername = findViewById<EditText>(R.id.SignUpUsername)
 
         val user = Firebase.auth.currentUser
         if (user != null) {
@@ -35,6 +36,7 @@ class SignUpActivity : AppCompatActivity() {
         btnSignUp.setOnClickListener {
             val email = etEmail.text.toString()
             val password = etPassword.text.toString()
+            val username = signUpUsername.text.toString()
 
             auth = Firebase.auth
             database = Firebase.database.reference
@@ -45,6 +47,9 @@ class SignUpActivity : AppCompatActivity() {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "createUserWithEmail:success")
                         val user = auth.currentUser
+                        if (user != null) {
+                            database.child("Users").child(user.uid).child("Username").setValue(username)
+                        }
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish()

@@ -32,6 +32,9 @@ class LoginActivity : AppCompatActivity() {
 
         val user = Firebase.auth.currentUser
         if (user != null) {
+            Toast.makeText(baseContext, user.uid, Toast.LENGTH_LONG).show()
+        }
+        if (user != null) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
