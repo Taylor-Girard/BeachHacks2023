@@ -33,6 +33,11 @@ import java.util.*
 var addressSubmitted = false
 
 class AddPinActivity : AppCompatActivity() {
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pin)
