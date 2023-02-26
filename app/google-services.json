@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "754912382154",
+    "project_id": "beachhacks-2023",
+    "storage_bucket": "beachhacks-2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754912382154:android:c215d71781ee8b2080b833",
+        "android_client_info": {
+          "package_name": "com.taylorgirard.beachhacks2023"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "754912382154-64ttsa30b1kkjrfh0e93lv3k5h6gjqr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClxIV0ZfALvuQtyX_VQ-1M0N5g9DbvBK8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "754912382154-64ttsa30b1kkjrfh0e93lv3k5h6gjqr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
