@@ -30,6 +30,7 @@ import java.net.URLEncoder
 import java.nio.file.attribute.AclEntry.newBuilder
 import java.util.*
 
+var addressSubmitted = false
 
 class AddPinActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +41,7 @@ class AddPinActivity : AppCompatActivity() {
         val etTitle = findViewById<EditText>(R.id.etTitle)
         val etDescription = findViewById<EditText>(R.id.etDescription)
         val btnSubmit = findViewById<Button>(R.id.btnSubmit)
-        val queue = Volley.newRequestQueue(this)
+        var queue = Volley.newRequestQueue(this)
 
         btnSubmit.setOnClickListener{
             val address = etAddress.text.toString()
@@ -49,7 +50,7 @@ class AddPinActivity : AppCompatActivity() {
 
             var weburl = "https://maps.googleapis.com/maps/api/geocode/json?" + "address=" + address + "&key=" + BuildConfig.MAPS_API_KEY
 
-            val stringRequest = StringRequest(Request.Method.GET, weburl,
+            var stringRequest = StringRequest(Request.Method.GET, weburl,
                 { response ->
 
                     val obj = JSONObject(response)
@@ -71,14 +72,15 @@ class AddPinActivity : AppCompatActivity() {
                                 database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Description").setValue(description)
                                 database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lat").setValue(lat)
                                 database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lng").setValue(long)
+                                addressSubmitted = true
+
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
 
                             }
                         }
                         Log.i("geocoding",response)
-
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
                     } else {
                         Toast.makeText(baseContext, "Invalid Address",
                             Toast.LENGTH_SHORT).show()
