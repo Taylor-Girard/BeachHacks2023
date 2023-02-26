@@ -4,9 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -31,6 +30,7 @@ import java.nio.file.attribute.AclEntry.newBuilder
 import java.util.*
 
 var addressSubmitted = false
+var colorPosition = 0
 
 class AddPinActivity : AppCompatActivity() {
 
@@ -43,10 +43,33 @@ class AddPinActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_pin)
 
         val etAddress = findViewById<EditText>(R.id.etAddress)
+        val spColor = findViewById<Spinner>(R.id.spnColor)
         val etTitle = findViewById<EditText>(R.id.etTitle)
         val etDescription = findViewById<EditText>(R.id.etDescription)
         val btnSubmit = findViewById<Button>(R.id.btnSubmit)
         var queue = Volley.newRequestQueue(this)
+
+        val languages = resources.getStringArray(R.array.Colors)
+
+        if (spColor != null) {
+            val adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_item, languages
+            )
+            spColor.adapter = adapter
+        }
+
+        spColor.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>,
+                                        view: View, position: Int, id: Long) {
+                colorPosition = position
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // write code to perform some action
+            }
+        }
 
         btnSubmit.setOnClickListener{
             val address = etAddress.text.toString()
@@ -77,6 +100,7 @@ class AddPinActivity : AppCompatActivity() {
                                 database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Description").setValue(description)
                                 database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lat").setValue(lat)
                                 database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Lng").setValue(long)
+                                database.child("Groups").child(userGroup).child("Pins").child(uniqueID).child("Color").setValue(colorPosition)
                                 addressSubmitted = true
 
                                 val intent = Intent(this, MainActivity::class.java)

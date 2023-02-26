@@ -17,6 +17,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
@@ -128,7 +130,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                                 var position = LatLng(pin.child("Lat").value.toString().toDouble(), pin.child("Lng").value.toString().toDouble())
                                 var title = pin.child("Title").value.toString()
                                 var description = pin.child("Description").value.toString()
-                                val marker = map.addMarker(MarkerOptions().position(position).title(title).snippet(description))
+                                var colorPosition = pin.child("Color").value.toString().toInt()
+                                var color = BitmapDescriptorFactory.HUE_AZURE
+                                when (colorPosition){
+                                    0 -> color = BitmapDescriptorFactory.HUE_AZURE
+                                    1 -> color = BitmapDescriptorFactory.HUE_BLUE
+                                    2 -> color = BitmapDescriptorFactory.HUE_CYAN
+                                    3 -> color = BitmapDescriptorFactory.HUE_GREEN
+                                    4 -> color = BitmapDescriptorFactory.HUE_MAGENTA
+                                    5 -> color = BitmapDescriptorFactory.HUE_ORANGE
+                                    6 -> color = BitmapDescriptorFactory.HUE_RED
+                                    7 -> color = BitmapDescriptorFactory.HUE_ROSE
+                                    8 -> color = BitmapDescriptorFactory.HUE_VIOLET
+                                    9 -> color = BitmapDescriptorFactory.HUE_YELLOW
+                                }
+                                val marker = map.addMarker(MarkerOptions().position(position).title(title).snippet(description).icon(BitmapDescriptorFactory.defaultMarker(color)))
                             }
                         }
 

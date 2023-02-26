@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">BeachHacks2023</string>
+    <string-array name="Colors">
+        <item>Azure</item>
+        <item>Blue</item>
+        <item>Cyan</item>
+        <item>Green</item>
+        <item>Magenta</item>
+        <item>Orange</item>
+        <item>Red</item>
+        <item>Rose</item>
+        <item>Violet</item>
+        <item>Yellow</item>
+    </string-array>
 </resources>
