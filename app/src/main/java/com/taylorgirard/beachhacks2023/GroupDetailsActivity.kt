@@ -37,7 +37,7 @@ class GroupDetailsActivity : AppCompatActivity() {
 
         if (user != null) {
             database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
-                groupText.text = task.result.value.toString()
+                groupText.text = "Your group number is " + task.result.value.toString()
             }.addOnFailureListener {
                 groupText.text = "error getting group"
             }
