@@ -20,6 +20,7 @@ import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.collec
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpRequest
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
@@ -92,6 +93,7 @@ class AddPinActivity : AppCompatActivity() {
 
                         val user = Firebase.auth.currentUser
                         val database = Firebase.database.reference
+
                         if (user != null) {
                             database.child("Users").child(user.uid).child("Group").get().addOnCompleteListener { task ->
                                 val userGroup = task.result.value.toString()

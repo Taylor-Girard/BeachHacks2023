@@ -2,11 +2,10 @@ package com.taylorgirard.beachhacks2023
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActionBar
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -17,11 +16,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -39,6 +36,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        supportActionBar?.hide()
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -154,6 +153,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     })
 
                 }
+        }
+
+        map.setOnInfoWindowClickListener {
+
         }
 
     }
